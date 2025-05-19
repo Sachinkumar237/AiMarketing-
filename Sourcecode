@@ -1,0 +1,39 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset
+file_path = '/mnt/data/Tesla_dataset (1).csv'
+df = pd.read_csv(file_path)
+
+# Display basic information
+print("First few rows of the dataset:")
+print(df.head())
+print("\nDataset info:")
+print(df.info())
+print("\nSummary statistics:")
+print(df.describe())
+
+# Convert 'Date' column to datetime if it's present
+if 'Date' in df.columns:
+    df['Date'] = pd.to_datetime(df['Date'])
+    df.sort_values('Date', inplace=True)
+
+# Check for missing values
+print("\nMissing values in each column:")
+print(df.isnull().sum())
+
+# Fill or drop missing values (here we'll forward fill)
+df.fillna(method='ffill', inplace=True)
+
+# Plot closing prices if available
+if 'Close' in df.columns and 'Date' in df.columns:
+    plt.figure(figsize=(12, 6))
+    plt.plot(df['Date'], df['Close'], label='Closing Price')
+    plt.xlabel('Date')
+    plt.ylabel('Price')
+    plt.title('Tesla Stock Closing Price Over Time')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+else:
+    print("\n'Close' and/or 'Date' column not found for plotting.")
